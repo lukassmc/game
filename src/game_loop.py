@@ -9,6 +9,8 @@ from sounds import *
 from paused import paused_overlay
 
 def reset_game_state():
+    """Resetea todos los elementos del juego.
+    """
     global player, puertas, enemigos, balas, fondo, tiempo_inicial, tiempo_final, tiempos_creacion1, tiempos_creacion2, tiempos_creacion3, enemigos_creados, puerta1, puerta2, puerta3, score, last_score_time
     
     px, py = 65, 490
@@ -47,6 +49,8 @@ def reset_game_state():
 
 
 def game_loop():
+    """Bucle principal del juego.
+    """
     pygame.init() 
     pygame.display.set_caption("Cursed Doors")
     reset_game_state()  
@@ -99,19 +103,19 @@ def game_loop():
                         player.disparar(balas, "Violeta")
                     else:
                         no_energy.play()
-                        muestra_avisos(PANTALLA, None, "No tienes energia suficiente.", (0, 180, 255), 30, 600, 30, 5)
+                        muestra_avisos(PANTALLA, None, "No tienes energia suficiente.", (0, 180, 255), 30, 1090, 70, 5)
                 if event.key == pygame.K_j:
                     if player.current_cursed_energy >= 30:
                         player.disparar(balas, "Rojo")
                     else:
                         no_energy.play()
-                        muestra_avisos(PANTALLA, None, "No tienes energia suficiente.", (0, 180, 255), 30, 600, 30, 5)
+                        muestra_avisos(PANTALLA, None, "No tienes energia suficiente.", (0, 180, 255), 30, 1090, 70, 5)
                 if event.key == pygame.K_k:
                     if player.current_cursed_energy >= 60:
                         player.disparar(balas, "Azul")
                     else:
                         no_energy.play()
-                        muestra_avisos(PANTALLA, None, "No tienes energia suficiente.", (0, 180, 255), 30, 600, 30, 5)
+                        muestra_avisos(PANTALLA, None, "No tienes energia suficiente.", (0, 180, 255), 30, 1090, 70, 5)
         
         if not flag_paused:
             if time.time() - last_score_time >= 5:
@@ -136,9 +140,9 @@ def game_loop():
             
             mostrar_puntuacion(PANTALLA, font, NEGRO, 30, 1150, 13, score)
             
-            crear_enemigos_random(tiempo_final, enemigos, posicion_plataforma1, tiempos_creacion1, enemigos_creados, 1)
-            crear_enemigos_random(tiempo_final, enemigos, posicion_plataforma2, tiempos_creacion2, enemigos_creados, 2)
-            crear_enemigos_random(tiempo_final, enemigos, posicion_plataforma3, tiempos_creacion3, enemigos_creados, 3)
+            crear_enemigos_random(tiempo_final, enemigos, posicion_plataforma1, tiempos_creacion1, enemigos_creados)
+            crear_enemigos_random(tiempo_final, enemigos, posicion_plataforma2, tiempos_creacion2, enemigos_creados)
+            crear_enemigos_random(tiempo_final, enemigos, posicion_plataforma3, tiempos_creacion3, enemigos_creados)
             
             colision = pygame.sprite.groupcollide(enemigos, balas, False, False)
             colision_puerta = pygame.sprite.groupcollide(puertas, enemigos, False, False)

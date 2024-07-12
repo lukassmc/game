@@ -1,40 +1,8 @@
 from settings import *
 import time
 from classes import *
-import csv
 
-
-def wait_user(tecla, boton):
-    continuar = True
-    while continuar:
-        for evento in pygame.event.get():
-            if evento.type == pygame.KEYDOWN:
-                if evento.key == tecla:
-                    continuar = False
-            if evento.type == pygame.MOUSEBUTTONDOWN and boton.check_apretar():
-                pygame.quit()    
-
-
-def crear_boton(screen, color_normal, color_hover, rect, text, font, text_color):
     
-    mouse_pos = pygame.mouse.get_pos()
-    mouse_click = pygame.mouse.get_pressed()
-    button_rect = pygame.Rect(rect)
-
-    if button_rect.collidepoint(mouse_pos):
-        pygame.draw.rect(screen, color_hover, button_rect)
-        if mouse_click[0] == 1:
-            return True
-    else:
-        pygame.draw.rect(screen, color_normal, button_rect)
-
-   
-    text_surface = font.render(text, True, text_color)
-    text_rect = text_surface.get_rect(center=button_rect.center)
-    screen.blit(text_surface, text_rect)
-
-    return False
-
 
 
 def barra_hp(surface, x, y, vida)-> None:
@@ -136,11 +104,13 @@ def mostrar_puntuacion(pantalla, fuente, color, dimensiones, x, y, score):
 
 
 
-def guardar_puntuacion(nombre, score, archivo="high_scores.csv"):
+def guardar_puntuacion(nombre, score, texto,archivo="high_scores.csv"):
     with open(archivo, mode='a', newline='') as file:
-        file.write(f"{nombre},{score}\n")
+        file.write(f"{nombre},{score}, {texto}\n")
 
-def crear_enemigos_random(tiempo_final, spritegroup, plataforma, tiempos_creacion, enemigos_creados, entranumero):
+def crear_enemigos_random(tiempo_final, spritegroup, plataforma, tiempos_creacion, enemigos_creados):
+    
+    
     tiempo_restante = int(tiempo_final - time.time())
     
     for segundo_a_crear_enemigo in tiempos_creacion:
@@ -152,6 +122,14 @@ def crear_enemigos_random(tiempo_final, spritegroup, plataforma, tiempos_creacio
 
             
 def game_over_screen(pantalla, fuente, score, tiempo_supervivencia):
+    """Muestra una pantalla blanca con un texto "Game over.", su puntuacion, el tiempo que sobrevivio,y para ingresar su nombre, y guarda esta info en un archivo csv
+
+    Args:
+        pantalla (_type_): Superficie a dibujar
+        fuente (_type_): fuente a utilizar
+        score (_type_): Puntuacion
+        tiempo_supervivencia (_type_): Tiempo sobrevivido
+    """
     pygame.mixer.music.pause()
     bleach.play()
     pantalla.fill(NEGRO)
@@ -164,21 +142,22 @@ def game_over_screen(pantalla, fuente, score, tiempo_supervivencia):
     pygame.display.flip()
     
     name = ""
-    input_active = True
-    while input_active:
+    input_activado = True
+    while input_activado:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
-                    guardar_puntuacion(name, score)
-                    input_active = False
+                    guardar_puntuacion(name, score, f"Murio, aguanto {tiempo_supervivencia} segundos.")
+                    input_activado = False
                 elif event.key == pygame.K_BACKSPACE:
                     name = name[:-1]
                 else:
                     name += event.unicode
         
         
+        pantalla.fill(NEGRO)    
         muestra_texto(pantalla, fuente, "Game Over", (255, 0, 0), 50, 400, 100)
         muestra_texto(pantalla, fuente, f"Tiempo sobrevivido: {tiempo_supervivencia} segundos", BLANCO, 40, 350, 200)
         muestra_texto(pantalla, fuente, f"Score: {score}", BLANCO, 40, 400, 300)
@@ -188,6 +167,13 @@ def game_over_screen(pantalla, fuente, score, tiempo_supervivencia):
         pygame.display.flip()    
               
 def win_screen(pantalla, fuente, score):
+    """Muestra una pantalla blanca con un texto "Ganaste!", su puntuacion, y para ingresar su nombre, y guarda esta info en un archivo csv.
+
+    Args:
+        pantalla (_type_): Superficie a dibujar
+        fuente (_type_): fuente a utilizar
+        score (_type_): Puntuacion
+    """
     pygame.mixer.music.pause()
     skyfall.play()
     pantalla.fill(BLANCO)
@@ -200,15 +186,15 @@ def win_screen(pantalla, fuente, score):
     pygame.display.flip()
     
     name = ""
-    input_active = True
-    while input_active:
+    input_activado = True
+    while input_activado:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
-                    guardar_puntuacion(name, score)
-                    input_active = False
+                    guardar_puntuacion(name, score, "Ha ganado!")
+                    input_activado = False
                 elif event.key == pygame.K_BACKSPACE:
                     name = name[:-1]
                 else:

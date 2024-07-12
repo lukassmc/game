@@ -8,6 +8,8 @@ pygame.init()
 PANTALLA= pygame.display.set_mode((1240, 700))
 
 def menu():
+    """Bucle del menu principal.
+    """
     pygame.mixer.music.pause()
     
     fondo_menu= pygame.image.load("assets/imagenes/bacckground.png").convert()
@@ -55,6 +57,7 @@ def menu():
                 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if boton_play.check_apretar(mouse_posicion):
+                    pygame.mixer.music.pause()
                     domain_expansion.play()
                     game_loop()
                 if boton_controls.check_apretar(mouse_posicion):
