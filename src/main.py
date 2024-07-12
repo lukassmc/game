@@ -1,1 +1,5 @@
-import pygame
+from main_menu import menu
+
+menu()
+
+
